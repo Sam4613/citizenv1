@@ -1,0 +1,2116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Etra for CITIZEN - Dashboard</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS for Utility-First Styling -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Heroicons for Premium Icons -->
+  <script src="https://unpkg.com/heroicons@2.0.13/dist/heroicons.min.js"></script>
+
+  <!-- SweetAlert2 for Alerts -->
+  <script defer src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!-- Chart.js for Charts -->
+  <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Alpine.js for Interactivity -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <!-- Custom Styles -->
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #121212; /* Dark background */
+      color: #e5e7eb; /* Light text */
+    }
+    .sidebar {
+      background-color: #1f2937; /* Dark sidebar */
+    }
+    .sidebar a {
+      color: #9ca3af; /* Gray text */
+    }
+    .sidebar a.active {
+      background-color: #374151; /* Darker background for active link */
+      color: #ffffff;
+    }
+    .content {
+      background-color: #121212; /* Match body background */
+    }
+    /* Scrollbar Styling */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background-color: #374151;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-track {
+      background-color: #1f2937;
+    }
+    /* Notification Dropdown */
+    .notification-dropdown {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body class="flex h-screen overflow-hidden" x-data="{ mobileMenuOpen: false, notificationOpen: false }">
+
+  <!-- Sidebar -->
+  <div class="sidebar w-64 flex-shrink-0 hidden md:flex flex-col">
+    <div class="flex items-center justify-center h-16 bg-gray-900">
+      <h1 class="text-white text-2xl font-bold">Etra CITIZEN</h1>
+    </div>
+    <nav class="flex-1 px-2 py-4 space-y-2">
+      <a href="#home" @click="switchTab('home')" class="flex items-center px-2 py-2 text-sm font-medium rounded-md active bg-gray-800">
+        <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor">
+          <use href="#home-icon"></use>
+        </svg>
+        <span class="ml-3">Home</span>
+      </a>
+      <a href="#registration" @click="switchTab('registration')" class="flex items-center px-2 py-2 text-sm font-medium rounded-md hover:bg-gray-700">
+        <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor">
+          <use href="#register-icon"></use>
+        </svg>
+        <span class="ml-3">Registration</span>
+      </a>
+      <a href="#cards" @click="switchTab('cards')" class="flex items-center px-2 py-2 text-sm font-medium rounded-md hover:bg-gray-700">
+        <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor">
+          <use href="#cards-icon"></use>
+        </svg>
+        <span class="ml-3">Cards</span>
+      </a>
+      <a href="#recharge" @click="switchTab('recharge')" class="flex items-center px-2 py-2 text-sm font-medium rounded-md hover:bg-gray-700">
+        <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor">
+          <use href="#recharge-icon"></use>
+        </svg>
+        <span class="ml-3">Recharge</span>
+      </a>
+      <a href="#history" @click="switchTab('history')" class="flex items-center px-2 py-2 text-sm font-medium rounded-md hover:bg-gray-700">
+        <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor">
+          <use href="#history-icon"></use>
+        </svg>
+        <span class="ml-3">History</span>
+      </a>
+      <a href="#scan" @click="switchTab('scan')" class="flex items-center px-2 py-2 text-sm font-medium rounded-md hover:bg-gray-700">
+        <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor">
+          <use href="#scan-icon"></use>
+        </svg>
+        <span class="ml-3">Scan</span>
+      </a>
+      <a href="#profile" @click="switchTab('profile')" class="flex items-center px-2 py-2 text-sm font-medium rounded-md hover:bg-gray-700">
+        <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor">
+          <use href="#profile-icon"></use>
+        </svg>
+        <span class="ml-3">Profile</span>
+      </a>
+      <a href="#reports" @click="switchTab('reports')" class="flex items-center px-2 py-2 text-sm font-medium rounded-md hover:bg-gray-700">
+        <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor">
+          <use href="#reports-icon"></use>
+        </svg>
+        <span class="ml-3">Reports</span>
+      </a>
+    </nav>
+  </div>
+
+  <!-- Main Content -->
+  <div class="flex-1 flex flex-col overflow-hidden">
+    
+    <!-- Header -->
+    <header class="flex items-center justify-between px-4 py-2 bg-gray-900">
+      <div class="flex items-center">
+        <button @click="mobileMenuOpen = true" class="text-gray-400 hover:text-white focus:outline-none md:hidden">
+          <svg class="h-6 w-6" fill="none" stroke="currentColor">
+            <use href="#menu-icon"></use>
+          </svg>
+        </button>
+        <h1 class="hidden md:block text-white text-xl font-bold ml-4">Dashboard</h1>
+      </div>
+      <div class="flex items-center space-x-4">
+        <!-- Search Bar -->
+        <div class="relative">
+          <input type="text" placeholder="Search..." class="hidden md:block bg-gray-700 text-white rounded-md pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          <svg class="absolute left-3 top-2.5 h-5 w-5 text-gray-400 hidden md:block" fill="none" stroke="currentColor">
+            <use href="#search-icon"></use>
+          </svg>
+        </div>
+        <!-- Notification Bell -->
+        <div class="relative" @click="notificationOpen = !notificationOpen">
+          <button class="relative text-gray-400 hover:text-white focus:outline-none">
+            <svg class="h-6 w-6" fill="none" stroke="currentColor">
+              <use href="#notification-icon"></use>
+            </svg>
+            <span class="absolute top-0 right-0 inline-flex items-center justify-center px-1 py-0.5 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">3</span>
+          </button>
+          <!-- Notification Dropdown -->
+          <div x-show="notificationOpen" @click.away="notificationOpen = false" class="absolute right-0 mt-2 w-80 bg-gray-800 rounded-lg shadow-lg z-50">
+            <div class="p-4">
+              <h3 class="text-lg font-semibold text-white mb-2">Notifications</h3>
+              <div class="notification-dropdown space-y-2">
+                <div class="flex items-center p-2 bg-gray-700 rounded-md">
+                  <svg class="h-5 w-5 text-green-400 mr-2" fill="none" stroke="currentColor">
+                    <use href="#success-icon"></use>
+                  </svg>
+                  <span class="text-sm text-white">User U123 has been registered successfully.</span>
+                </div>
+                <div class="flex items-center p-2 bg-gray-700 rounded-md">
+                  <svg class="h-5 w-5 text-yellow-400 mr-2" fill="none" stroke="currentColor">
+                    <use href="#warning-icon"></use>
+                  </svg>
+                  <span class="text-sm text-white">EID Card for User U456 is expiring soon.</span>
+                </div>
+                <div class="flex items-center p-2 bg-gray-700 rounded-md">
+                  <svg class="h-5 w-5 text-red-400 mr-2" fill="none" stroke="currentColor">
+                    <use href="#error-icon"></use>
+                  </svg>
+                  <span class="text-sm text-white">Failed recharge attempt for User U789.</span>
+                </div>
+              </div>
+              <button class="mt-4 w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-md">
+                View All
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- User Profile -->
+        <div class="relative">
+          <button class="flex items-center text-gray-400 hover:text-white focus:outline-none">
+            <img src="https://via.placeholder.com/32" alt="User Avatar" class="h-8 w-8 rounded-full">
+            <span class="ml-2 hidden md:block">Admin</span>
+            <svg class="h-5 w-5 ml-1 hidden md:block" fill="none" stroke="currentColor">
+              <use href="#chevron-down-icon"></use>
+            </svg>
+          </button>
+          <!-- Profile Dropdown -->
+          <div class="absolute right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-lg z-50 hidden md:block">
+            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">Profile</a>
+            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">Settings</a>
+            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700">Logout</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Mobile Sidebar -->
+    <div x-show="mobileMenuOpen" class="fixed inset-0 flex z-40 md:hidden">
+      <div class="fixed inset-0 bg-gray-600 bg-opacity-75" @click="mobileMenuOpen = false"></div>
+      <div class="relative flex-1 flex flex-col max-w-xs w-full bg-gray-800">
+        <div class="absolute top-0 right-0 -mr-12 pt-2">
+          <button @click="mobileMenuOpen = false" class="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:bg-gray-600">
+            <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor">
+              <use href="#close-icon"></use>
+            </svg>
+          </button>
+        </div>
+        <div class="flex-shrink-0 px-4 py-4 bg-gray-900">
+          <h1 class="text-white text-2xl font-bold">Etra CITIZEN</h1>
+        </div>
+        <nav class="mt-5 flex-1 h-0 overflow-y-auto px-2 space-y-1">
+          <a href="#home" @click="switchTab('home'); mobileMenuOpen = false" class="flex items-center px-2 py-2 text-base font-medium rounded-md active bg-gray-700">
+            <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor">
+              <use href="#home-icon"></use>
+            </svg>
+            <span class="ml-3">Home</span>
+          </a>
+          <a href="#registration" @click="switchTab('registration'); mobileMenuOpen = false" class="flex items-center px-2 py-2 text-base font-medium rounded-md hover:bg-gray-700">
+            <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor">
+              <use href="#register-icon"></use>
+            </svg>
+            <span class="ml-3">Registration</span>
+          </a>
+          <a href="#cards" @click="switchTab('cards'); mobileMenuOpen = false" class="flex items-center px-2 py-2 text-base font-medium rounded-md hover:bg-gray-700">
+            <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor">
+              <use href="#cards-icon"></use>
+            </svg>
+            <span class="ml-3">Cards</span>
+          </a>
+          <a href="#recharge" @click="switchTab('recharge'); mobileMenuOpen = false" class="flex items-center px-2 py-2 text-base font-medium rounded-md hover:bg-gray-700">
+            <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor">
+              <use href="#recharge-icon"></use>
+            </svg>
+            <span class="ml-3">Recharge</span>
+          </a>
+          <a href="#history" @click="switchTab('history'); mobileMenuOpen = false" class="flex items-center px-2 py-2 text-base font-medium rounded-md hover:bg-gray-700">
+            <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor">
+              <use href="#history-icon"></use>
+            </svg>
+            <span class="ml-3">History</span>
+          </a>
+          <a href="#scan" @click="switchTab('scan'); mobileMenuOpen = false" class="flex items-center px-2 py-2 text-base font-medium rounded-md hover:bg-gray-700">
+            <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor">
+              <use href="#scan-icon"></use>
+            </svg>
+            <span class="ml-3">Scan</span>
+          </a>
+          <a href="#profile" @click="switchTab('profile'); mobileMenuOpen = false" class="flex items-center px-2 py-2 text-base font-medium rounded-md hover:bg-gray-700">
+            <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor">
+              <use href="#profile-icon"></use>
+            </svg>
+            <span class="ml-3">Profile</span>
+          </a>
+          <a href="#reports" @click="switchTab('reports'); mobileMenuOpen = false" class="flex items-center px-2 py-2 text-base font-medium rounded-md hover:bg-gray-700">
+            <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor">
+              <use href="#reports-icon"></use>
+            </svg>
+            <span class="ml-3">Reports</span>
+          </a>
+        </nav>
+      </div>
+      <div class="flex-shrink-0 w-14"></div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="fixed top-5 right-5 z-50 space-y-2"></div>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 overflow-y-auto p-6 content">
+      <div id="content-container">
+        <!-- Dynamic content will be injected here -->
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-400 text-center py-4">
+      <div class="flex flex-col md:flex-row items-center justify-between space-y-2 md:space-y-0">
+        <div>
+          <a href="#" class="mx-2 hover:text-white">Help</a>
+          <a href="#" class="mx-2 hover:text-white">Contact</a>
+        </div>
+        <div>
+          <small>&copy; 2024 Etra CITIZEN. All Rights Reserved.</small>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Heroicons SVG Definitions -->
+  <svg style="display: none;">
+    <!-- Home Icon -->
+    <symbol id="home-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M3 12l2-2m0 0l7-7 7 7M13 5v6h6m-6 0L12 3"></path>
+    </symbol>
+    <!-- Register Icon -->
+    <symbol id="register-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"></path>
+      <circle cx="8.5" cy="7" r="4"></circle>
+      <path d="M20.84 14.73a10.05 10.05 0 00-.84-1.73"></path>
+    </symbol>
+    <!-- Cards Icon -->
+    <symbol id="cards-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+      <path d="M2 11h20"></path>
+    </symbol>
+    <!-- Recharge Icon -->
+    <symbol id="recharge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M12 3v18"></path>
+      <path d="M5 12h14"></path>
+    </symbol>
+    <!-- History Icon -->
+    <symbol id="history-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M3 12a9 9 0 1118 0 9 9 0 01-18 0z"></path>
+      <path d="M12 7v5l3 3"></path>
+    </symbol>
+    <!-- Scan Icon -->
+    <symbol id="scan-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="3"></circle>
+      <path d="M6 6l12 12"></path>
+    </symbol>
+    <!-- Profile Icon -->
+    <symbol id="profile-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"></path>
+      <circle cx="12" cy="7" r="4"></circle>
+    </symbol>
+    <!-- Reports Icon -->
+    <symbol id="reports-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M9 17H7a2 2 0 01-2-2V5a2 2 0 012-2h10a2 2 0 012 2v5"></path>
+      <path d="M9 17l-3 3m0 0l3 3m-3-3h12"></path>
+      <path d="M9 14a3 3 0 100-6 3 3 0 000 6z"></path>
+    </symbol>
+    <!-- Menu Icon -->
+    <symbol id="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M4 6h16M4 12h16M4 18h16"></path>
+    </symbol>
+    <!-- Close Icon -->
+    <symbol id="close-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M6 18L18 6M6 6l12 12"></path>
+    </symbol>
+    <!-- Search Icon -->
+    <symbol id="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="11" cy="11" r="8"></circle>
+      <path d="M21 21l-4.35-4.35"></path>
+    </symbol>
+    <!-- Notification Icon -->
+    <symbol id="notification-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+    </symbol>
+    <!-- Success Icon -->
+    <symbol id="success-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M5 13l4 4L19 7"></path>
+    </symbol>
+    <!-- Warning Icon -->
+    <symbol id="warning-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M12 9v2m0 4h.01M10.29 3.86l-9.17 15A2 2 0 004 21h16a2 2 0 001.71-3.14l-9.17-15A2 2 0 0012 3z"></path>
+    </symbol>
+    <!-- Error Icon -->
+    <symbol id="error-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M6 18L18 6M6 6l12 12"></path>
+    </symbol>
+    <!-- Chevron Down Icon -->
+    <symbol id="chevron-down-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M6 8l4 4 4-4"></path>
+    </symbol>
+    <!-- Save Icon -->
+    <symbol id="save-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M19 21H5a2 2 0 01-2-2V7a2 2 0 012-2h11l5 5v9a2 2 0 01-2 2z"></path>
+      <polyline points="17 21 17 13 7 13 7 21"></polyline>
+      <polyline points="7 3 7 8 15 8"></polyline>
+    </symbol>
+    <!-- Reset Icon -->
+    <symbol id="reset-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M4 4v5h.582a9 9 0 0116.836 0H20"></path>
+      <path d="M20 20v-5a9 9 0 00-16.836 0H4"></path>
+    </symbol>
+    <!-- Refund Icon -->
+    <symbol id="refund-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M10 14l2-2m0 0l2-2m-2 2V6"></path>
+      <path d="M16 4h2a2 2 0 012 2v12a2 2 0 01-2 2h-2"></path>
+    </symbol>
+    <!-- Unblock Icon -->
+    <symbol id="unblock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M9 17V7"></path>
+      <path d="M7 7h4l5 5"></path>
+      <path d="M14 7h4a2 2 0 012 2v6a2 2 0 01-2 2h-4"></path>
+    </symbol>
+    <!-- Freeze Icon -->
+    <symbol id="freeze-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path>
+      <path d="M19.4 15a1.65 1.65 0 00-.6-1.8l-3-2.5a2 2 0 00-2.6 0l-3 2.5a1.65 1.65 0 00-1.2.6"></path>
+      <path d="M4 19h16"></path>
+    </symbol>
+    <!-- Unfreeze Icon -->
+    <symbol id="unfreeze-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M9 17V7"></path>
+      <path d="M7 7h4l5 5"></path>
+      <path d="M14 7h4a2 2 0 012 2v6a2 2 0 01-2 2h-4"></path>
+      <path d="M12 12l4 4"></path>
+    </symbol>
+    <!-- View Icon -->
+    <symbol id="view-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+      <path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+    </symbol>
+    <!-- Filter Icon -->
+    <symbol id="filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M4 6h16"></path>
+      <path d="M10 6v14"></path>
+      <path d="M14 6v14"></path>
+    </symbol>
+  </svg>
+
+  <!-- Tailwind CSS Configuration for Dark Mode -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {},
+      },
+      variants: {},
+      plugins: [],
+    }
+  </script>
+
+  <!-- Custom JavaScript -->
+  <script>
+    const LOCALSTORAGE_KEY = 'etraCitizenExtreme_v6';
+    let users = [];
+    let scans = [];
+    let recharges = [];
+    let logbook = [];
+    let refunds = [];
+
+    function loadDataFromLocalStorage() {
+      try {
+        const dStr = localStorage.getItem(LOCALSTORAGE_KEY);
+        if (dStr) {
+          const data = JSON.parse(dStr);
+          if (data.users) users = data.users;
+          if (data.scans) scans = data.scans;
+          if (data.recharges) recharges = data.recharges;
+          if (data.logbook) logbook = data.logbook;
+          if (data.refunds) refunds = data.refunds;
+        }
+      } catch(e) {
+        console.error('Error loading localStorage:', e);
+      }
+    }
+
+    function saveDataToLocalStorage() {
+      try {
+        const data = {
+          users,
+          scans,
+          recharges,
+          logbook,
+          refunds
+        };
+        localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(data));
+      } catch(e) {
+        console.error('Error saving localStorage:', e);
+      }
+    }
+
+    function showAlert(type, title, text) {
+      Swal.fire({
+        icon: type,
+        title,
+        text,
+        confirmButtonColor: (type === 'error') ? '#d33' : '#3085d6'
+      });
+    }
+
+    function showToast(message, title='Notification', color='bg-blue-500') {
+      const toastId = 'toast-' + Date.now();
+      const toastHtml = `
+        <div id="${toastId}" class="flex items-center p-4 mb-4 w-full max-w-xs text-white rounded-lg shadow-lg ${color}" role="alert">
+          <div class="ml-3 text-sm font-normal">${title}: ${message}</div>
+          <button type="button" class="ml-auto -mx-1.5 -my-1.5 bg-transparent text-white hover:text-gray-200 rounded-lg focus:ring-2 focus:ring-white p-1.5 hover:bg-gray-700" onclick="document.getElementById('${toastId}').remove()" aria-label="Close">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+          </button>
+        </div>
+      `;
+      const container = document.getElementById('toastContainer');
+      container.insertAdjacentHTML('beforeend', toastHtml);
+      setTimeout(() => {
+        const toast = document.getElementById(toastId);
+        if (toast) toast.remove();
+      }, 5000);
+    }
+
+    function validateUserInput(fields) {
+      for (let [key, val] of Object.entries(fields)) {
+        if (!val && val !== false) { // allow false boolean
+          showAlert('error','Validation Error',`${key} is required.`);
+          return false;
+        }
+      }
+      return true;
+    }
+
+    function validateExpirationDate(dateStr, isWhite) {
+      const now = new Date();
+      const exp = new Date(dateStr);
+      const diff = (exp - now)/(1000*60*60*24);
+      if (isWhite && diff > 30) {
+        showAlert('error','Invalid Expiration','White card max 30 days from now.');
+        return false;
+      }
+      if (!isWhite && diff < 45) {
+        showAlert('error','Invalid Expiration','EID card requires ≥45 days.');
+        return false;
+      }
+      return true;
+    }
+
+    function logAction(type, details) {
+      logbook.push({
+        timestamp: new Date().toLocaleString(),
+        actionType: type,
+        details
+      });
+      saveDataToLocalStorage();
+    }
+
+    function getUserBalance(uid) {
+      const u = users.find(x => x.id === uid);
+      return (u) ? u.balance.toFixed(2) : '-';
+    }
+
+    function searchTable(tableId, searchId) {
+      const input = document.getElementById(searchId);
+      const filter = input.value.toLowerCase();
+      const table = document.getElementById(tableId);
+      const rows = table.getElementsByTagName("tr");
+      for (let i = 1; i < rows.length; i++) {
+        let show = false;
+        const tds = rows[i].getElementsByTagName("td");
+        for (let j = 0; j < tds.length; j++) {
+          if (tds[j].innerText.toLowerCase().includes(filter)) {
+            show = true; break;
+          }
+        }
+        rows[i].style.display = show ? '' : 'none';
+      }
+    }
+
+    function setDefaultExpiration() {
+      const cType = document.getElementById("cardType");
+      const expElem = document.getElementById("idExpiration");
+      if (!cType || !expElem) return;
+      const offset = (cType.value === 'white') ? 30 : 45;
+      const dt = new Date();
+      dt.setDate(dt.getDate() + offset);
+      expElem.value = dt.toISOString().split('T')[0];
+    }
+
+    loadDataFromLocalStorage();
+
+    let visibleCards = ['totalUsers','totalBalance','expiring','lowBalance'];
+    function swapCard(cardKey) {
+      const allCards = ['totalUsers','totalBalance','expiring','lowBalance'];
+      const hiddenSet = allCards.filter(x => !visibleCards.includes(x));
+      const idx = visibleCards.indexOf(cardKey);
+      if (idx < 0) return;
+      visibleCards.splice(idx, 1);
+      const newCard = hiddenSet[0];
+      visibleCards.push(newCard);
+      tabs.home();
+    }
+
+    /* TAB NAVIGATION */
+    function switchTab(tabId) {
+      // Remove active class from all sidebar links
+      document.querySelectorAll('.sidebar a').forEach(link => {
+        if (link.getAttribute('href').replace('#','') === tabId) {
+          link.classList.add('active');
+        } else {
+          link.classList.remove('active');
+        }
+      });
+      // Render the corresponding tab
+      if (tabs[tabId]) tabs[tabId]();
+    }
+
+    function renderContent(html) {
+      const container = document.getElementById("content-container");
+      container.innerHTML = html;
+    }
+
+    const tabs = {
+      home: () => {
+        // Stats
+        const totalUsers = users.length;
+        const totalBal = users.reduce((acc,u) => acc + u.balance, 0).toFixed(2);
+        const expiringCount = users.filter(u => {
+          const d = new Date(u.idExpiration);
+          const limit = new Date(); limit.setDate(limit.getDate() + 45);
+          return d < limit;
+        }).length;
+        const lowBalCount = users.filter(u => u.balance < 10).length;
+
+        // Additional fields for charts
+        const whiteCount = users.filter(u => u.remarks === 'White Card').length;
+        const eidCount   = users.filter(u => u.remarks === 'EID Card').length;
+
+        const activeCount = users.filter(u => u.status === 'Active').length;
+        const blockedCount = users.filter(u => u.status === 'Blocked').length;
+        const frozenCount = users.filter(u => u.status === 'Frozen').length;
+
+        // Recent Activities
+        const recentActivities = logbook.slice(-5).reverse().map(l => `
+          <div class="flex items-center p-2 bg-gray-700 rounded-md">
+            <svg class="h-5 w-5 text-indigo-400 mr-2" fill="none" stroke="currentColor">
+              <use href="#${getIconByAction(l.actionType)}-icon"></use>
+            </svg>
+            <div>
+              <p class="text-sm text-white">${l.actionType}: ${formatDetails(l.details)}</p>
+              <p class="text-xs text-gray-400">${l.timestamp}</p>
+            </div>
+          </div>
+        `).join('');
+
+        // Card Data
+        const cardData = {
+          totalUsers: {
+            title: 'Total Users',
+            value: totalUsers,
+            color: 'bg-indigo-500',
+            icon: 'user-group'
+          },
+          totalBalance: {
+            title: 'Total Balance (days)',
+            value: totalBal,
+            color: 'bg-green-500',
+            icon: 'wallet'
+          },
+          expiring: {
+            title: 'Expiring (≤45d)',
+            value: expiringCount,
+            color: 'bg-yellow-500',
+            icon: 'clock'
+          },
+          lowBalance: {
+            title: 'Low Balance (<10)',
+            value: lowBalCount,
+            color: 'bg-red-500',
+            icon: 'exclamation-triangle'
+          }
+        };
+
+        let cardsHtml = '';
+        visibleCards.forEach(key => {
+          let c = cardData[key];
+          cardsHtml += `
+            <div class="bg-gray-800 rounded-lg shadow-lg p-6 flex items-center justify-between cursor-pointer hover:shadow-2xl transition-shadow duration-300" onclick="swapCard('${key}')">
+              <div>
+                <h3 class="text-lg font-semibold text-white">${c.title}</h3>
+                <p class="text-3xl font-bold text-white">${c.value}</p>
+              </div>
+              <div>
+                <svg class="h-12 w-12 text-white" fill="currentColor">
+                  <use href="#${c.icon}-icon"></use>
+                </svg>
+              </div>
+            </div>
+          `;
+        });
+
+        let homeHtml = `
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            ${cardsHtml}
+          </div>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+            <div class="bg-gray-800 rounded-lg shadow-lg p-6">
+              <h3 class="text-xl font-semibold text-white mb-4">Card Type Distribution</h3>
+              <canvas id="cardTypeChart" class="bg-gray-700 rounded-lg p-4"></canvas>
+              <div id="cardTypePlaceholder" class="text-center text-gray-400 mt-4 hidden">No data available.</div>
+            </div>
+            <div class="bg-gray-800 rounded-lg shadow-lg p-6">
+              <h3 class="text-xl font-semibold text-white mb-4">Status Distribution</h3>
+              <canvas id="statusChart" class="bg-gray-700 rounded-lg p-4"></canvas>
+              <div id="statusPlaceholder" class="text-center text-gray-400 mt-4 hidden">No data available.</div>
+            </div>
+          </div>
+          <div class="mt-8">
+            <h3 class="text-xl font-semibold text-white mb-4">Recent Activities</h3>
+            <div class="space-y-2">
+              ${recentActivities || '<p class="text-gray-400">No recent activities.</p>'}
+            </div>
+          </div>
+        `;
+        renderContent(homeHtml);
+
+        // Card Type Chart
+        const ctc = document.getElementById('cardTypeChart');
+        const hasAnyCard = (whiteCount + eidCount) > 0;
+        if (hasAnyCard) {
+          new Chart(ctc, {
+            type: 'doughnut',
+            data: {
+              labels: ['EID', 'White'],
+              datasets: [{
+                data: [eidCount, whiteCount],
+                backgroundColor: ['#6366F1', '#F59E0B']
+              }]
+            },
+            options: { maintainAspectRatio: false }
+          });
+        } else {
+          document.getElementById('cardTypePlaceholder').classList.remove('hidden');
+          ctc.classList.add('hidden');
+        }
+
+        // Status Chart
+        const sc = document.getElementById('statusChart');
+        const hasAnyStatus = (activeCount + blockedCount + frozenCount) > 0;
+        if (hasAnyStatus){
+          new Chart(sc, {
+            type: 'pie',
+            data: {
+              labels: ['Active', 'Blocked', 'Frozen'],
+              datasets: [{
+                data: [activeCount, blockedCount, frozenCount],
+                backgroundColor: ['#10B981', '#EF4444', '#F59E0B']
+              }]
+            },
+            options: { maintainAspectRatio: false }
+          });
+        } else {
+          document.getElementById('statusPlaceholder').classList.remove('hidden');
+          sc.classList.add('hidden');
+        }
+      },
+
+      registration: () => {
+        let html = `
+          <h2 class="text-2xl font-semibold text-white mb-6"><i class="h-6 w-6 text-indigo-400 mr-2"></i>User Registration</h2>
+          <form onsubmit="registerUser(event)" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-sm font-medium text-gray-300">User ID</label>
+                <input type="text" id="userId" required class="mt-1 block w-full bg-gray-700 text-white border border-gray-600 rounded-md p-2 focus:ring-indigo-500 focus:border-indigo-500">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-300">Full Name</label>
+                <input type="text" id="fullName" required class="mt-1 block w-full bg-gray-700 text-white border border-gray-600 rounded-md p-2 focus:ring-indigo-500 focus:border-indigo-500">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-300">Emirates ID No.</label>
+                <input type="text" id="emiratesIdNo" class="mt-1 block w-full bg-gray-700 text-white border border-gray-600 rounded-md p-2 focus:ring-indigo-500 focus:border-indigo-500">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-300">Card Type</label>
+                <select id="cardType" required onchange="toggleExpirationDate()" class="mt-1 block w-full bg-gray-700 text-white border border-gray-600 rounded-md p-2 focus:ring-indigo-500 focus:border-indigo-500">
+                  <option value="eid" selected>EID Card</option>
+                  <option value="white">White Card</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-300">Expiration Date</label>
+                <input type="date" id="idExpiration" required class="mt-1 block w-full bg-gray-700 text-white border border-gray-600 rounded-md p-2 focus:ring-indigo-500 focus:border-indigo-500">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-300">Remarks</label>
+                <textarea id="remarks" rows="3" class="mt-1 block w-full bg-gray-700 text-white border border-gray-600 rounded-md p-2 focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+              </div>
+              <!-- Additional Fields -->
+              <div>
+                <label class="block text-sm font-medium text-gray-300">Company Name</label>
+                <input type="text" id="companyName" class="mt-1 block w-full bg-gray-700 text-white border border-gray-600 rounded-md p-2 focus:ring-indigo-500 focus:border-indigo-500">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-300">Store Name</label>
+                <input type="text" id="storeName" class="mt-1 block w-full bg-gray-700 text-white border border-gray-600 rounded-md p-2 focus:ring-indigo-500 focus:border-indigo-500">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-300">Pick Location</label>
+                <input type="text" id="pickLocation" class="mt-1 block w-full bg-gray-700 text-white border border-gray-600 rounded-md p-2 focus:ring-indigo-500 focus:border-indigo-500">
+              </div>
+              <div class="flex items-center">
+                <input type="checkbox" id="onlineCompany" class="h-4 w-4 text-indigo-600 bg-gray-700 border-gray-600 rounded focus:ring-indigo-500">
+                <label for="onlineCompany" class="ml-2 block text-sm text-gray-300">
+                  Online Company
+                </label>
+              </div>
+              <div class="flex items-center">
+                <input type="checkbox" id="blockCard" class="h-4 w-4 text-indigo-600 bg-gray-700 border-gray-600 rounded focus:ring-indigo-500">
+                <label for="blockCard" class="ml-2 block text-sm text-gray-300">
+                  Block Card
+                </label>
+              </div>
+            </div>
+            <div class="flex space-x-4">
+              <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-md flex items-center">
+                <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor">
+                  <use href="#save-icon"></use>
+                </svg>
+                Register
+              </button>
+              <button type="reset" class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-md flex items-center">
+                <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor">
+                  <use href="#reset-icon"></use>
+                </svg>
+                Clear
+              </button>
+            </div>
+          </form>
+        `;
+        renderContent(html);
+        setDefaultExpiration();
+      },
+
+      cards: () => {
+        // Active Cards
+        const activeRows = users.filter(u => u.status === 'Active').map(u => `
+          <tr>
+            <td class="py-2 px-4">${u.id}</td>
+            <td class="py-2 px-4">${u.name}</td>
+            <td class="py-2 px-4">${u.emiratesIdNo || '-'}</td>
+            <td class="py-2 px-4">${u.idExpiration}</td>
+            <td class="py-2 px-4">${u.status}</td>
+            <td class="flex space-x-2">
+              <button class="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded-md flex items-center" onclick="blockCard('${u.id}')">
+                <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor">
+                  <use href="#error-icon"></use>
+                </svg>
+                Block
+              </button>
+              <button class="bg-yellow-500 hover:bg-yellow-600 text-white px-2 py-1 rounded-md flex items-center" onclick="freezeCard('${u.id}')">
+                <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor">
+                  <use href="#freeze-icon"></use>
+                </svg>
+                Freeze
+              </button>
+              <button class="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded-md flex items-center" onclick="viewHistory('${u.id}')">
+                <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor">
+                  <use href="#view-icon"></use>
+                </svg>
+                History
+              </button>
+            </td>
+          </tr>
+        `).join('');
+
+        // Blocked Cards
+        const blockedRows = users.filter(u => u.status === 'Blocked').map(u => `
+          <tr>
+            <td class="py-2 px-4">${u.id}</td>
+            <td class="py-2 px-4">${u.name}</td>
+            <td class="py-2 px-4">${u.emiratesIdNo || '-'}</td>
+            <td class="py-2 px-4">${u.idExpiration}</td>
+            <td class="py-2 px-4">${u.status}</td>
+            <td class="flex space-x-2">
+              <button class="bg-green-600 hover:bg-green-700 text-white px-2 py-1 rounded-md flex items-center" onclick="unblockCard('${u.id}')">
+                <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor">
+                  <use href="#success-icon"></use>
+                </svg>
+                Unblock
+              </button>
+              <button class="bg-gray-600 hover:bg-gray-700 text-white px-2 py-1 rounded-md flex items-center" onclick="refundCard('${u.id}')">
+                <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor">
+                  <use href="#refund-icon"></use>
+                </svg>
+                Refund
+              </button>
+              <button class="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded-md flex items-center" onclick="viewHistory('${u.id}')">
+                <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor">
+                  <use href="#view-icon"></use>
+                </svg>
+                History
+              </button>
+            </td>
+          </tr>
+        `).join('');
+
+        // Frozen Cards
+        const frozenRows = users.filter(u => u.status === 'Frozen').map(u => `
+          <tr>
+            <td class="py-2 px-4">${u.id}</td>
+            <td class="py-2 px-4">${u.name}</td>
+            <td class="py-2 px-4">${u.emiratesIdNo || '-'}</td>
+            <td class="py-2 px-4">${u.idExpiration}</td>
+            <td class="py-2 px-4">${u.status}</td>
+            <td class="flex space-x-2">
+              <button class="bg-yellow-500 hover:bg-yellow-600 text-white px-2 py-1 rounded-md flex items-center" onclick="unfreezeCard('${u.id}')">
+                <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor">
+                  <use href="#unfreeze-icon"></use>
+                </svg>
+                Unfreeze
+              </button>
+              <button class="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded-md flex items-center" onclick="viewHistory('${u.id}')">
+                <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor">
+                  <use href="#view-icon"></use>
+                </svg>
+                History
+              </button>
+            </td>
+          </tr>
+        `).join('');
+
+        let html = `
+          <h2 class="text-2xl font-semibold text-white mb-6"><i class="h-6 w-6 text-red-400 mr-2"></i>Card Management</h2>
+          <div class="tabs">
+            <div class="flex space-x-4 mb-4">
+              <button class="bg-indigo-600 text-white px-4 py-2 rounded-md" onclick="openCardTab('active')">Active Cards</button>
+              <button class="bg-gray-700 text-white px-4 py-2 rounded-md" onclick="openCardTab('blocked')">Blocked Cards</button>
+              <button class="bg-gray-700 text-white px-4 py-2 rounded-md" onclick="openCardTab('frozen')">Frozen Cards</button>
+            </div>
+            <div id="cards-content">
+              <!-- Active Cards Table -->
+              <div id="active-cards" class="space-y-4">
+                <input type="text" id="searchActive" class="w-full bg-gray-700 text-white rounded-md p-2" placeholder="Search Active Cards" onkeyup="searchTable('activeTable','searchActive')" />
+                <div class="overflow-x-auto">
+                  <table class="min-w-full bg-gray-800 rounded-lg" id="activeTable">
+                    <thead>
+                      <tr>
+                        <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">User ID</th>
+                        <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Name</th>
+                        <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Emirates ID</th>
+                        <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Expiration</th>
+                        <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Status</th>
+                        <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      ${activeRows || '<tr><td colspan="6" class="text-center text-gray-500 py-4">No active cards found.</td></tr>'}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <!-- Blocked Cards Table -->
+              <div id="blocked-cards" class="space-y-4 hidden">
+                <input type="text" id="searchBlocked" class="w-full bg-gray-700 text-white rounded-md p-2" placeholder="Search Blocked Cards" onkeyup="searchTable('blockedTable','searchBlocked')" />
+                <div class="overflow-x-auto">
+                  <table class="min-w-full bg-gray-800 rounded-lg" id="blockedTable">
+                    <thead>
+                      <tr>
+                        <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">User ID</th>
+                        <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Name</th>
+                        <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Emirates ID</th>
+                        <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Expiration</th>
+                        <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Status</th>
+                        <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      ${blockedRows || '<tr><td colspan="6" class="text-center text-gray-500 py-4">No blocked cards found.</td></tr>'}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <!-- Frozen Cards Table -->
+              <div id="frozen-cards" class="space-y-4 hidden">
+                <input type="text" id="searchFrozen" class="w-full bg-gray-700 text-white rounded-md p-2" placeholder="Search Frozen Cards" onkeyup="searchTable('frozenTable','searchFrozen')" />
+                <div class="overflow-x-auto">
+                  <table class="min-w-full bg-gray-800 rounded-lg" id="frozenTable">
+                    <thead>
+                      <tr>
+                        <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">User ID</th>
+                        <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Name</th>
+                        <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Emirates ID</th>
+                        <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Expiration</th>
+                        <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Status</th>
+                        <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      ${frozenRows || '<tr><td colspan="6" class="text-center text-gray-500 py-4">No frozen cards found.</td></tr>'}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+        renderContent(html);
+      },
+
+      recharge: () => {
+        let html = `
+          <h2 class="text-2xl font-semibold text-white mb-6"><i class="h-6 w-6 text-green-400 mr-2"></i>Recharge</h2>
+          <form onsubmit="rechargeUser(event)" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div>
+                <label class="block text-sm font-medium text-gray-300">User ID</label>
+                <input type="text" id="rechargeUserId" required @blur="autoFillRechargeInfo()" class="mt-1 block w-full bg-gray-700 text-white border border-gray-600 rounded-md p-2 focus:ring-green-500 focus:border-green-500">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-300">Name</label>
+                <input type="text" id="rechargeUserName" readonly class="mt-1 block w-full bg-gray-600 text-gray-300 border border-gray-600 rounded-md p-2">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-300">Emirates ID</label>
+                <input type="text" id="rechargeEmiratesId" readonly class="mt-1 block w-full bg-gray-600 text-gray-300 border border-gray-600 rounded-md p-2">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-300">Days Remaining</label>
+                <input type="text" id="rechargeDaysRemaining" readonly class="mt-1 block w-full bg-gray-600 text-gray-300 border border-gray-600 rounded-md p-2">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-300">Recharge Date</label>
+                <input type="date" id="rechargeDate" required class="mt-1 block w-full bg-gray-700 text-white border border-gray-600 rounded-md p-2 focus:ring-green-500 focus:border-green-500">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-300">Payment Method</label>
+                <select id="paymentMethod" required class="mt-1 block w-full bg-gray-700 text-white border border-gray-600 rounded-md p-2 focus:ring-green-500 focus:border-green-500">
+                  <option value="" disabled selected>Select Method</option>
+                  <option value="online">Online Payment</option>
+                  <option value="debit">Debit</option>
+                </select>
+              </div>
+              <div class="md:col-span-2">
+                <label class="block text-sm font-medium text-gray-300">Recharge Option</label>
+                <select id="rechargeOption" required class="mt-1 block w-full bg-gray-700 text-white border border-gray-600 rounded-md p-2 focus:ring-green-500 focus:border-green-500">
+                  <option value="" disabled selected>Select an option</option>
+                  <option value="10">10 Days - AED 50</option>
+                  <option value="15">15 Days - AED 75</option>
+                  <option value="30">30 Days + 5 Grace - AED 125</option>
+                  <option value="daily">Daily Pass - AED 10</option>
+                </select>
+              </div>
+              <div class="md:col-span-3">
+                <label class="block text-sm font-medium text-gray-300">Remarks</label>
+                <textarea id="rechargeRemarks" rows="3" class="mt-1 block w-full bg-gray-700 text-white border border-gray-600 rounded-md p-2 focus:ring-green-500 focus:border-green-500"></textarea>
+              </div>
+            </div>
+            <div class="flex space-x-4">
+              <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-md flex items-center">
+                <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor">
+                  <use href="#recharge-icon"></use>
+                </svg>
+                Recharge
+              </button>
+              <button type="reset" class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-md flex items-center">
+                <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor">
+                  <use href="#reset-icon"></use>
+                </svg>
+                Clear
+              </button>
+            </div>
+          </form>
+          <hr class="my-8 border-gray-700" />
+          <h4 class="text-xl font-semibold text-white mb-4">Recent Recharges</h4>
+          <div class="overflow-x-auto">
+            <table class="min-w-full bg-gray-800 rounded-lg">
+              <thead>
+                <tr>
+                  <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">User ID</th>
+                  <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Date & Time</th>
+                  <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Option</th>
+                  <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Amount</th>
+                  <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Payment</th>
+                  <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Remarks</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${
+                  recharges.slice(-5).reverse().map(r => `
+                    <tr>
+                      <td class="py-2 px-4">${r.userId}</td>
+                      <td class="py-2 px-4">${r.date}</td>
+                      <td class="py-2 px-4">${r.option}</td>
+                      <td class="py-2 px-4">AED ${r.amount}</td>
+                      <td class="py-2 px-4">${r.method}</td>
+                      <td class="py-2 px-4">${r.remarks || '-'}</td>
+                    </tr>
+                  `).join('')
+                }
+              </tbody>
+            </table>
+          </div>
+        `;
+        renderContent(html);
+      },
+
+      history: () => {
+        let histHtml = `
+          <h2 class="text-2xl font-semibold text-white mb-6"><i class="h-6 w-6 text-yellow-400 mr-2"></i>History</h2>
+          <div class="tabs">
+            <div class="flex space-x-4 mb-4">
+              <button class="bg-indigo-600 text-white px-4 py-2 rounded-md" onclick="openHistoryTab('travel')">Travel History</button>
+              <button class="bg-gray-700 text-white px-4 py-2 rounded-md" onclick="openHistoryTab('recharge')">Recharge History</button>
+              <button class="bg-gray-700 text-white px-4 py-2 rounded-md" onclick="openHistoryTab('incident')">Incidents</button>
+            </div>
+            <div id="history-content">
+              <!-- Travel History Table -->
+              <div id="travel-history" class="space-y-4">
+                <input type="text" id="searchTravel" class="w-full bg-gray-700 text-white rounded-md p-2" placeholder="Search Travel History" onkeyup="searchTable('travelHistoryTable','searchTravel')" />
+                <div class="overflow-x-auto">
+                  <table class="min-w-full bg-gray-800 rounded-lg" id="travelHistoryTable">
+                    <thead>
+                      <tr>
+                        <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">User ID</th>
+                        <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">In Time</th>
+                        <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Date</th>
+                        <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Bus No.</th>
+                        <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Remaining Days</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      ${
+                        scans.map(s => `
+                          <tr>
+                            <td class="py-2 px-4">${s.userId}</td>
+                            <td class="py-2 px-4">${s.inTime || '-'}</td>
+                            <td class="py-2 px-4">${s.dateStr || '-'}</td>
+                            <td class="py-2 px-4">${s.busNo || 'Citizen 1'}</td>
+                            <td class="py-2 px-4">${getUserBalance(s.userId)}</td>
+                          </tr>
+                        `).join('')
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <!-- Recharge History Table -->
+              <div id="recharge-history" class="space-y-4 hidden">
+                <input type="text" id="searchRechargeHist" class="w-full bg-gray-700 text-white rounded-md p-2" placeholder="Search Recharge History" onkeyup="searchTable('rechargeHistoryTable','searchRechargeHist')" />
+                <div class="overflow-x-auto">
+                  <table class="min-w-full bg-gray-800 rounded-lg" id="rechargeHistoryTable">
+                    <thead>
+                      <tr>
+                        <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">User ID</th>
+                        <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Date & Time</th>
+                        <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Option</th>
+                        <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Amount</th>
+                        <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Payment</th>
+                        <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Tx ID</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      ${
+                        recharges.map((r, i) => `
+                          <tr>
+                            <td class="py-2 px-4">${r.userId}</td>
+                            <td class="py-2 px-4">${r.date}</td>
+                            <td class="py-2 px-4">${r.option}</td>
+                            <td class="py-2 px-4">AED ${r.amount}</td>
+                            <td class="py-2 px-4">${r.method}</td>
+                            <td class="py-2 px-4">TX${1000 + i}</td>
+                          </tr>
+                        `).join('')
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <!-- Incidents Table -->
+              <div id="incidents" class="space-y-4 hidden">
+                <input type="text" id="searchIncident" class="w-full bg-gray-700 text-white rounded-md p-2" placeholder="Search Incidents" onkeyup="searchTable('incidentTable','searchIncident')" />
+                <div class="overflow-x-auto">
+                  <table class="min-w-full bg-gray-800 rounded-lg" id="incidentTable">
+                    <thead>
+                      <tr>
+                        <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">User ID</th>
+                        <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Type</th>
+                        <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Timestamp</th>
+                        <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      ${
+                        logbook.filter(l => l.actionType === 'Incident').map(l => `
+                          <tr>
+                            <td class="py-2 px-4">${l.details.userId || '-'}</td>
+                            <td class="py-2 px-4">${l.details.type || '-'}</td>
+                            <td class="py-2 px-4">${l.timestamp}</td>
+                            <td class="py-2 px-4">${l.details.action || '-'}</td>
+                          </tr>
+                        `).join('')
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+        renderContent(html);
+      },
+
+      scan: () => {
+        const last = scans.slice(-5).reverse().map(s => `
+          <tr>
+            <td class="py-2 px-4">${s.userId}</td>
+            <td class="py-2 px-4">${s.inTime || '-'}</td>
+            <td class="py-2 px-4">${s.dateStr || '-'}</td>
+            <td class="py-2 px-4">${s.busNo || 'Citizen 1'}</td>
+            <td class="py-2 px-4">${getUserBalance(s.userId)}</td>
+          </tr>
+        `).join('');
+        let html = `
+          <h2 class="text-2xl font-semibold text-white mb-6"><i class="h-6 w-6 text-purple-400 mr-2"></i>Scan</h2>
+          <form onsubmit="scanCard(event)" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-sm font-medium text-gray-300">Scan Method</label>
+                <select id="scanMethod" required class="mt-1 block w-full bg-gray-700 text-white border border-gray-600 rounded-md p-2 focus:ring-purple-500 focus:border-purple-500">
+                  <option value="" disabled selected>Select Method</option>
+                  <option value="manual">Manual</option>
+                  <option value="qr">QR Code</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-300">User ID</label>
+                <input type="text" id="scanUserId" required class="mt-1 block w-full bg-gray-700 text-white border border-gray-600 rounded-md p-2 focus:ring-purple-500 focus:border-purple-500">
+              </div>
+            </div>
+            <div class="flex space-x-4">
+              <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-md flex items-center">
+                <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor">
+                  <use href="#scan-icon"></use>
+                </svg>
+                Scan
+              </button>
+              <button type="reset" class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-md flex items-center">
+                <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor">
+                  <use href="#reset-icon"></use>
+                </svg>
+                Clear
+              </button>
+            </div>
+          </form>
+          <hr class="my-8 border-gray-700" />
+          <h4 class="text-xl font-semibold text-white mb-4">Recent Scans</h4>
+          <div class="overflow-x-auto">
+            <table class="min-w-full bg-gray-800 rounded-lg">
+              <thead>
+                <tr>
+                  <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">User ID</th>
+                  <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">In Time</th>
+                  <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Date</th>
+                  <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Bus No.</th>
+                  <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Balance</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${last || '<tr><td colspan="5" class="text-center text-gray-500 py-4">No recent scans.</td></tr>'}
+              </tbody>
+            </table>
+          </div>
+        `;
+        renderContent(html);
+      },
+
+      profile: () => {
+        let html = `
+          <h2 class="text-2xl font-semibold text-white mb-6"><i class="h-6 w-6 text-blue-400 mr-2"></i>Passenger Profile</h2>
+          <div class="space-y-6">
+            <div>
+              <label class="block text-sm font-medium text-gray-300">Enter User ID</label>
+              <input type="text" id="profileUserId" placeholder="e.g. U123" class="mt-1 block w-1/2 bg-gray-700 text-white border border-gray-600 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <button class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md flex items-center" onclick="viewPassengerProfile()">
+              <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor">
+                <use href="#view-icon"></use>
+              </svg>
+              Search Profile
+            </button>
+            <div id="profileResult"></div>
+          </div>
+        `;
+        renderContent(html);
+      },
+
+      reports: () => {
+        let html = `
+          <h2 class="text-2xl font-semibold text-white mb-6"><i class="h-6 w-6 text-pink-400 mr-2"></i>Reports</h2>
+          <form onsubmit="generateReport(event)" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+              <div>
+                <label class="block text-sm font-medium text-gray-300">Report Type</label>
+                <select id="reportType" required class="mt-1 block w-full bg-gray-700 text-white border border-gray-600 rounded-md p-2 focus:ring-pink-500 focus:border-pink-500">
+                  <option value="" disabled selected>Select Report</option>
+                  <option value="financial">Financial Report</option>
+                  <option value="lowBalance">Low Balance</option>
+                  <option value="expiredCards">Expired Cards</option>
+                  <option value="whiteSummary">White Cards Summary</option>
+                  <option value="cashTransactions">Cash Transactions</option>
+                  <option value="cardTransactions">Card Transactions</option>
+                  <option value="refundReport">Refund Report</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-300">Start Date</label>
+                <input type="date" id="startDate" required class="mt-1 block w-full bg-gray-700 text-white border border-gray-600 rounded-md p-2 focus:ring-pink-500 focus:border-pink-500">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-300">End Date</label>
+                <input type="date" id="endDate" required class="mt-1 block w-full bg-gray-700 text-white border border-gray-600 rounded-md p-2 focus:ring-pink-500 focus:border-pink-500">
+              </div>
+              <div class="flex items-end">
+                <button type="submit" class="bg-pink-600 hover:bg-pink-700 text-white font-semibold py-2 px-4 rounded-md flex items-center w-full">
+                  <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor">
+                    <use href="#filter-icon"></use>
+                  </svg>
+                  Generate
+                </button>
+              </div>
+            </div>
+          </form>
+          <div id="reportResult" class="mt-8"></div>
+        `;
+        renderContent(html);
+      }
+    };
+
+    /* OPEN CARD TAB */
+    function openCardTab(tab) {
+      // Hide all card sections
+      document.getElementById('active-cards').classList.add('hidden');
+      document.getElementById('blocked-cards').classList.add('hidden');
+      document.getElementById('frozen-cards').classList.add('hidden');
+      // Show selected tab
+      if(tab === 'active') {
+        document.getElementById('active-cards').classList.remove('hidden');
+      } else if(tab === 'blocked') {
+        document.getElementById('blocked-cards').classList.remove('hidden');
+      } else if(tab === 'frozen') {
+        document.getElementById('frozen-cards').classList.remove('hidden');
+      }
+    }
+
+    /* OPEN HISTORY TAB */
+    function openHistoryTab(tab) {
+      // Hide all history sections
+      document.getElementById('travel-history').classList.add('hidden');
+      document.getElementById('recharge-history').classList.add('hidden');
+      document.getElementById('incidents').classList.add('hidden');
+      // Show selected tab
+      if(tab === 'travel') {
+        document.getElementById('travel-history').classList.remove('hidden');
+      } else if(tab === 'recharge') {
+        document.getElementById('recharge-history').classList.remove('hidden');
+      } else if(tab === 'incident') {
+        document.getElementById('incidents').classList.remove('hidden');
+      }
+    }
+
+    /* ICON BY ACTION TYPE */
+    function getIconByAction(actionType) {
+      switch(actionType) {
+        case 'User Registered': return 'success';
+        case 'Card Blocked': return 'error';
+        case 'Card Unblocked': return 'success';
+        case 'Card Frozen': return 'warning';
+        case 'Card Unfrozen': return 'success';
+        case 'User Recharged': return 'success';
+        case 'Refund': return 'success';
+        case 'Card Scanned': return 'success';
+        case 'Incident': return 'error';
+        case 'Warning': return 'warning';
+        default: return 'info';
+      }
+    }
+
+    /* FORMAT DETAILS */
+    function formatDetails(details) {
+      if(details.userId) return `User ID: ${details.userId}`;
+      if(details.type) return `Type: ${details.type}`;
+      if(details.action) return `Action: ${details.action}`;
+      if(details.issue) return `Issue: ${details.issue}`;
+      if(details.amount) return `Amount: ${details.amount}`;
+      return JSON.stringify(details);
+    }
+
+    /* EVENT HANDLERS */
+    function registerUser(e) {
+      e.preventDefault();
+      const userId = document.getElementById("userId").value.trim();
+      const fullName = document.getElementById("fullName").value.trim();
+      const emiratesIdNo = document.getElementById("emiratesIdNo").value.trim();
+      const cType = document.getElementById("cardType").value;
+      const idExp = document.getElementById("idExpiration").value;
+      const remarks = document.getElementById("remarks").value.trim();
+
+      const companyName = document.getElementById("companyName").value.trim();
+      const storeName = document.getElementById("storeName").value.trim();
+      const pickLocation = document.getElementById("pickLocation").value.trim();
+      const onlineCompany = document.getElementById("onlineCompany").checked;
+      const blockCard = document.getElementById("blockCard").checked;
+
+      // Check duplicates
+      if (users.find(u => u.id === userId)) {
+        showAlert('error','Registration Error','User ID already exists.');
+        return;
+      }
+      // Validate input
+      if (!validateUserInput({userId, fullName, idExp})) return;
+      let isWhite = (cType === 'white');
+      if (!validateExpirationDate(idExp, isWhite)) return;
+
+      let statusVal = 'Active';
+      if (blockCard) statusVal = 'Blocked';
+
+      const userObj = {
+        id: userId,
+        name: fullName,
+        emiratesIdNo,
+        cardType: isWhite ? 'White Card' : 'EID Card',
+        idExpiration: idExp,
+        balance: 0,
+        remarks: isWhite ? 'White Card' : 'EID Card',
+        status: statusVal,
+        issueDate: isWhite ? (new Date().toISOString().split('T')[0]) : null,
+        companyName,
+        storeName,
+        pickLocation,
+        onlineCompany
+      };
+      users.push(userObj);
+      saveDataToLocalStorage();
+      logAction('User Registered', userObj);
+      showAlert('success','Success','User Registered.');
+      showToast(`User [${userId}] added.`, 'Registration', 'bg-green-500');
+      switchTab('cards');
+    }
+
+    function blockCard(userId) {
+      const user = users.find(u => u.id === userId);
+      if(!user) {
+        showAlert('error','Block Error','User not found');
+        return;
+      }
+      if(user.status === 'Blocked') {
+        showAlert('info','Already Blocked',`[${userId}] is already blocked`);
+        return;
+      }
+      user.status = 'Blocked';
+      saveDataToLocalStorage();
+      logAction('Card Blocked',{userId});
+      showToast(`Card [${userId}] blocked.`, 'Block', 'bg-red-500');
+      switchTab('cards');
+    }
+
+    function unblockCard(userId) {
+      const user = users.find(u => u.id === userId);
+      if(!user) {
+        showAlert('error','Unblock Error','User not found');
+        return;
+      }
+      if(user.status !== 'Blocked') {
+        showAlert('info','Not Blocked',`[${userId}] is not blocked`);
+        return;
+      }
+      user.status = 'Active';
+      saveDataToLocalStorage();
+      logAction('Card Unblocked',{userId});
+      showToast(`Card [${userId}] unblocked.`, 'Unblock', 'bg-green-500');
+      switchTab('cards');
+    }
+
+    function freezeCard(userId) {
+      const user = users.find(u => u.id === userId);
+      if(!user){
+        showAlert('error','Freeze Error','User not found.');
+        return;
+      }
+      if(user.status === 'Frozen') {
+        showAlert('info','Already Frozen',`[${userId}] is already frozen.`);
+        return;
+      }
+      user.status = 'Frozen';
+      saveDataToLocalStorage();
+      logAction('Card Frozen',{userId});
+      showToast(`Card [${userId}] frozen.`, 'Freeze', 'bg-yellow-500');
+      switchTab('cards');
+    }
+
+    function unfreezeCard(userId) {
+      const user = users.find(u => u.id === userId);
+      if(!user){
+        showAlert('error','Unfreeze Error','User not found.');
+        return;
+      }
+      if(user.status !== 'Frozen') {
+        showAlert('info','Not Frozen',`[${userId}] is not frozen`);
+        return;
+      }
+      user.status = 'Active';
+      saveDataToLocalStorage();
+      logAction('Card Unfrozen',{userId});
+      showToast(`Card [${userId}] is active.`, 'Unfreeze', 'bg-green-500');
+      switchTab('cards');
+    }
+
+    function refundCard(userId) {
+      const user = users.find(u => u.id === userId);
+      if(!user){
+        showAlert('error','Refund Error','User not found.');
+        return;
+      }
+      Swal.fire({
+        title:'Refund Confirmation',
+        text:`Refund all balance from [${userId}]? Current Balance = ${user.balance.toFixed(2)} days`,
+        icon:'warning',
+        showCancelButton:true,
+        confirmButtonText:'Yes, Refund',
+        cancelButtonText:'Cancel'
+      }).then(res => {
+        if(res.isConfirmed){
+          const refundAmount = user.balance;
+          user.balance = 0;
+          saveDataToLocalStorage();
+          // Also store in refunds array
+          const refObj = {
+            userId,
+            amount: refundAmount,
+            timestamp: new Date().toLocaleString()
+          };
+          refunds.push(refObj);
+          saveDataToLocalStorage();
+          logAction('Refund',{userId, amount: refundAmount});
+          showToast(`User [${userId}] refunded ${refundAmount} days.`, 'Refund', 'bg-gray-500');
+          switchTab('cards');
+        }
+      });
+    }
+
+    function viewHistory(userId) {
+      const userScans = scans.filter(s => s.userId === userId).slice(-5).reverse();
+      const userRech = recharges.filter(r => r.userId === userId).slice(-5).reverse();
+
+      const scanRows = userScans.map(s => `
+        <tr>
+          <td class="py-2 px-4">${s.inTime || '-'}</td>
+          <td class="py-2 px-4">${s.dateStr || '-'}</td>
+          <td class="py-2 px-4">${s.busNo || 'Citizen 1'}</td>
+        </tr>
+      `).join('');
+      const rechRows = userRech.map(r => `
+        <tr>
+          <td class="py-2 px-4">${r.date}</td>
+          <td class="py-2 px-4">${r.option}</td>
+          <td class="py-2 px-4">AED ${r.amount}</td>
+          <td class="py-2 px-4">${r.method}</td>
+          <td class="py-2 px-4">${r.remarks || '-'}</td>
+        </tr>
+      `).join('');
+
+      let html = `
+        <h5 class="text-lg font-semibold text-white mb-4">Scans (Last 5)</h5>
+        <div class="overflow-x-auto mb-6">
+          <table class="min-w-full bg-gray-800 rounded-lg">
+            <thead>
+              <tr>
+                <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">In Time</th>
+                <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Date</th>
+                <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Bus No.</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${scanRows || '<tr><td colspan="3" class="text-center text-gray-500 py-4">No scans available.</td></tr>'}
+            </tbody>
+          </table>
+        </div>
+        <h5 class="text-lg font-semibold text-white mb-4">Recharges (Last 5)</h5>
+        <div class="overflow-x-auto">
+          <table class="min-w-full bg-gray-800 rounded-lg">
+            <thead>
+              <tr>
+                <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Date & Time</th>
+                <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Option</th>
+                <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Amount</th>
+                <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Method</th>
+                <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Remarks</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rechRows || '<tr><td colspan="5" class="text-center text-gray-500 py-4">No recharges available.</td></tr>'}
+            </tbody>
+          </table>
+        </div>
+      `;
+      Swal.fire({
+        title:`History [${userId}]`,
+        html,
+        width:700,
+        confirmButtonText:'Close',
+        customClass: {
+          popup: 'bg-gray-800 text-white',
+          confirmButton: 'bg-indigo-600 hover:bg-indigo-700'
+        },
+        buttonsStyling: false
+      });
+    }
+
+    function autoFillRechargeInfo() {
+      const userId = document.getElementById("rechargeUserId").value.trim();
+      const user = users.find(u => u.id === userId);
+      if(!user){
+        document.getElementById("rechargeUserName").value = '';
+        document.getElementById("rechargeEmiratesId").value = '';
+        document.getElementById("rechargeDaysRemaining").value = '';
+        return;
+      }
+      document.getElementById("rechargeUserName").value = user.name;
+      document.getElementById("rechargeEmiratesId").value = user.emiratesIdNo || '';
+      document.getElementById("rechargeDaysRemaining").value = user.balance.toFixed(2);
+    }
+
+    function rechargeUser(e) {
+      e.preventDefault();
+      const userId = document.getElementById("rechargeUserId").value.trim();
+      const userName = document.getElementById("rechargeUserName").value.trim();
+      const eIdNo = document.getElementById("rechargeEmiratesId").value.trim();
+      const rDaysRemain = document.getElementById("rechargeDaysRemaining").value.trim();
+      const rechargeD = document.getElementById("rechargeDate").value;
+      const payMethod = document.getElementById("paymentMethod").value;
+      const rOpt = document.getElementById("rechargeOption").value;
+      const remarks = document.getElementById("rechargeRemarks").value.trim();
+
+      const user = users.find(u => u.id === userId);
+      if(!user){
+        showAlert('error','Recharge Error','User not found');
+        return;
+      }
+
+      // If blocked/frozen, no recharge
+      if(user.status === 'Blocked'){
+        showAlert('error','Blocked Card','Cannot recharge a blocked card.');
+        return;
+      }
+      if(user.status === 'Frozen'){
+        showAlert('error','Frozen Card','Cannot recharge a frozen card.');
+        return;
+      }
+
+      let days = 0, amt = 0;
+      if(rOpt === 'daily'){
+        days = 1; amt = 10;
+      } else {
+        days = parseInt(rOpt);
+        if(days === 10) amt = 50;
+        else if(days === 15) amt = 75;
+        else if(days === 30) amt = 125;
+      }
+      user.balance += days;
+      const rec = {
+        userId,
+        date: new Date().toLocaleString(),
+        rechargeDate: rechargeD,
+        option: (rOpt === 'daily') ? 'Daily Pass' : days + ' Days',
+        amount: amt,
+        method: (payMethod === 'online' ? 'Online Payment' : 'Debit'),
+        remarks
+      };
+      recharges.push(rec);
+      saveDataToLocalStorage();
+      logAction('User Recharged', rec);
+      showAlert('success','Recharge Done',`[${userId}] +${days} days`);
+      showToast(`User [${userId}] recharged +${days} days.`, 'Recharge', 'bg-green-500');
+      switchTab('history');
+    }
+
+    function scanCard(e) {
+      e.preventDefault();
+      const method = document.getElementById("scanMethod").value;
+      const userId = document.getElementById("scanUserId").value.trim();
+      const user = users.find(u => u.id === userId);
+      if(!user){
+        showAlert('error','Scan Error',`User [${userId}] not found.`);
+        logAction('Incident',{userId, type:'Unregistered Scan'});
+        return;
+      }
+      // Blocked/Frozen check
+      if(user.status === 'Blocked'){
+        showAlert('error','Blocked Card','Cannot scan a blocked card.');
+        return;
+      }
+      if(user.status === 'Frozen'){
+        showAlert('error','Frozen Card','Cannot scan a frozen card.');
+        return;
+      }
+
+      const todayStr = new Date().toDateString();
+      const dayScans = scans.filter(s =>
+        s.userId === userId && new Date(s.timestamp).toDateString() === todayStr
+      );
+      if(dayScans.length >= 2){
+        showAlert('error','Limit Reached',`[${userId}] daily limit = 2`);
+        logAction('Incident',{userId, type:'Scan Limit Reached', action:'Override Needed'});
+        return;
+      }
+      if(user.balance < 0.5){
+        showAlert('error','No Balance',`[${userId}] has <0.5 days left`);
+        logAction('Incident',{userId, type:'Insufficient Balance'});
+        return;
+      }
+      const exp = new Date(user.idExpiration);
+      if(exp < new Date()){
+        showAlert('error','Card Expired',`[${userId}] card expired`);
+        logAction('Incident',{userId, type:'Expired Card'});
+        return;
+      } else {
+        const diff = (exp - (new Date()))/(1000*60*60*24);
+        if(diff < 45 && user.remarks === 'EID Card'){
+          showAlert('warning','EID Expiring',`[${userId}] <45 days left`);
+          logAction('Warning',{userId, issue:'EID Expiring Soon'});
+        }
+      }
+      user.balance -= 0.5;
+      const scanRec = {
+        userId,
+        timestamp: new Date().toLocaleString(),
+        inTime: new Date().toLocaleTimeString(),
+        dateStr: new Date().toLocaleDateString(),
+        busNo: 'Citizen 1'
+      };
+      scans.push(scanRec);
+      saveDataToLocalStorage();
+      logAction('Card Scanned', scanRec);
+      showAlert('success','Scan OK',`[${userId}] scanned. Rem: ${user.balance.toFixed(2)} days`);
+      showToast(`Scan success [${userId}] -0.5 days`, 'Scan', 'bg-purple-500');
+      switchTab('history');
+    }
+
+    function viewPassengerProfile() {
+      const pid = document.getElementById("profileUserId").value.trim();
+      const user = users.find(u => u.id === pid);
+      const resDiv = document.getElementById("profileResult");
+      if(!user){
+        resDiv.innerHTML = `<div class="bg-red-600 text-white p-4 rounded-md">User [${pid}] not found</div>`;
+        return;
+      }
+      const userScans = scans.filter(s => s.userId === pid);
+      const userRechs = recharges.filter(r => r.userId === pid);
+
+      const scansRows = userScans.map(s => `
+        <tr>
+          <td class="py-2 px-4">${s.inTime || '-'}</td>
+          <td class="py-2 px-4">${s.dateStr || '-'}</td>
+          <td class="py-2 px-4">${s.busNo || 'Citizen 1'}</td>
+        </tr>
+      `).join('');
+      const rechsRows = userRechs.map(r => `
+        <tr>
+          <td class="py-2 px-4">${r.date}</td>
+          <td class="py-2 px-4">${r.option}</td>
+          <td class="py-2 px-4">AED ${r.amount}</td>
+          <td class="py-2 px-4">${r.method}</td>
+          <td class="py-2 px-4">${r.remarks || '-'}</td>
+        </tr>
+      `).join('');
+
+      // Enhanced UI for profile
+      const html = `
+        <div class="bg-gray-800 rounded-lg shadow-lg p-6 mt-6">
+          <div class="flex flex-col md:flex-row">
+            <div class="md:w-1/2">
+              <p><strong class="text-white">Emirates ID:</strong> ${user.emiratesIdNo || '-'}</p>
+              <p><strong class="text-white">Card Type:</strong> ${user.cardType}</p>
+              <p><strong class="text-white">Status:</strong> ${user.status}</p>
+              <p><strong class="text-white">Balance:</strong> ${user.balance.toFixed(2)} days</p>
+              <p><strong class="text-white">Expiration:</strong> ${user.idExpiration}</p>
+              ${user.issueDate ? `<p><strong class="text-white">Issue Date:</strong> ${user.issueDate}</p>` : ''}
+            </div>
+            <div class="md:w-1/2 mt-4 md:mt-0">
+              <p><strong class="text-white">Company Name:</strong> ${user.companyName || '-'}</p>
+              <p><strong class="text-white">Store Name:</strong> ${user.storeName || '-'}</p>
+              <p><strong class="text-white">Pick Location:</strong> ${user.pickLocation || '-'}</p>
+              <p><strong class="text-white">Online Company:</strong> ${user.onlineCompany ? 'Yes' : 'No'}</p>
+              <p><strong class="text-white">Remarks:</strong> ${user.remarks || '-'}</p>
+            </div>
+          </div>
+          <hr class="my-4 border-gray-700">
+          <button class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-md flex items-center mb-4" data-bs-toggle="collapse" data-bs-target="#fullProfileHist">
+            <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor">
+              <use href="#view-icon"></use>
+            </svg>
+            Show Full History
+          </button>
+          <div class="collapse" id="fullProfileHist">
+            <h5 class="text-lg font-semibold text-white mb-2">Scans</h5>
+            <div class="overflow-x-auto mb-4">
+              <table class="min-w-full bg-gray-800 rounded-lg">
+                <thead>
+                  <tr>
+                    <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">In Time</th>
+                    <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Date</th>
+                    <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Bus No.</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${scansRows || '<tr><td colspan="3" class="text-center text-gray-500 py-4">No scans available.</td></tr>'}
+                </tbody>
+              </table>
+            </div>
+            <h5 class="text-lg font-semibold text-white mb-2">Recharges</h5>
+            <div class="overflow-x-auto">
+              <table class="min-w-full bg-gray-800 rounded-lg">
+                <thead>
+                  <tr>
+                    <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Date & Time</th>
+                    <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Option</th>
+                    <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Amount</th>
+                    <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Method</th>
+                    <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Remarks</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${rechsRows || '<tr><td colspan="5" class="text-center text-gray-500 py-4">No recharges available.</td></tr>'}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      `;
+      Swal.fire({
+        title:`History [${userId}]`,
+        html,
+        width:700,
+        confirmButtonText:'Close',
+        customClass: {
+          popup: 'bg-gray-800 text-white',
+          confirmButton: 'bg-indigo-600 hover:bg-indigo-700'
+        },
+        buttonsStyling: false
+      });
+    }
+
+    function autoFillRechargeInfo() {
+      const userId = document.getElementById("rechargeUserId").value.trim();
+      const user = users.find(u => u.id === userId);
+      if(!user){
+        document.getElementById("rechargeUserName").value = '';
+        document.getElementById("rechargeEmiratesId").value = '';
+        document.getElementById("rechargeDaysRemaining").value = '';
+        return;
+      }
+      document.getElementById("rechargeUserName").value = user.name;
+      document.getElementById("rechargeEmiratesId").value = user.emiratesIdNo || '';
+      document.getElementById("rechargeDaysRemaining").value = user.balance.toFixed(2);
+    }
+
+    function generateReport(e) {
+      e.preventDefault();
+      const rType = document.getElementById("reportType").value;
+      const sDate = new Date(document.getElementById("startDate").value);
+      const eDate = new Date(document.getElementById("endDate").value);
+      if(sDate > eDate){
+        showAlert('error','Invalid Range','Start date must be before or equal to End date.');
+        return;
+      }
+      let out = '', filtered = [];
+      switch(rType){
+        case 'financial':
+          {
+            const pass = prompt('Enter passkey for financial (online) report:');
+            if(pass !== '4613'){
+              showAlert('error','Access Denied','Incorrect passkey.');
+              return;
+            }
+            filtered = recharges.filter(r => {
+              const dt = new Date(r.date);
+              return dt >= sDate && dt <= eDate && r.method === 'Online Payment';
+            });
+            out = `
+              <h4 class="text-xl font-semibold text-white mb-4">Financial (Online Payment) Report</h4>
+              <div class="overflow-x-auto">
+                <table class="min-w-full bg-gray-800 rounded-lg">
+                  <thead>
+                    <tr>
+                      <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">User ID</th>
+                      <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Date & Time</th>
+                      <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${
+                      filtered.map(r => `
+                        <tr>
+                          <td class="py-2 px-4">${r.userId}</td>
+                          <td class="py-2 px-4">${r.date}</td>
+                          <td class="py-2 px-4">AED ${r.amount}</td>
+                        </tr>
+                      `).join('')
+                    }
+                  </tbody>
+                </table>
+              </div>
+            `;
+          }
+          break;
+        case 'lowBalance':
+          {
+            filtered = users.filter(u => u.balance < 10);
+            out = `
+              <h4 class="text-xl font-semibold text-white mb-4">Low Balance (<10) Report</h4>
+              <div class="overflow-x-auto">
+                <table class="min-w-full bg-gray-800 rounded-lg">
+                  <thead>
+                    <tr>
+                      <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">User ID</th>
+                      <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Name</th>
+                      <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Balance</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${
+                      filtered.map(u => `
+                        <tr>
+                          <td class="py-2 px-4">${u.id}</td>
+                          <td class="py-2 px-4">${u.name}</td>
+                          <td class="py-2 px-4">${u.balance.toFixed(2)}</td>
+                        </tr>
+                      `).join('')
+                    }
+                  </tbody>
+                </table>
+              </div>
+            `;
+          }
+          break;
+        case 'expiredCards':
+          {
+            filtered = users.filter(u => new Date(u.idExpiration) < new Date());
+            out = `
+              <h4 class="text-xl font-semibold text-white mb-4">Expired Cards Report</h4>
+              <div class="overflow-x-auto">
+                <table class="min-w-full bg-gray-800 rounded-lg">
+                  <thead>
+                    <tr>
+                      <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">User ID</th>
+                      <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Name</th>
+                      <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Expiration</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${
+                      filtered.map(u => `
+                        <tr>
+                          <td class="py-2 px-4">${u.id}</td>
+                          <td class="py-2 px-4">${u.name}</td>
+                          <td class="py-2 px-4">${u.idExpiration}</td>
+                        </tr>
+                      `).join('')
+                    }
+                  </tbody>
+                </table>
+              </div>
+            `;
+          }
+          break;
+        case 'whiteSummary':
+          {
+            filtered = users.filter(u => u.remarks === 'White Card');
+            out = `
+              <h4 class="text-xl font-semibold text-white mb-4">White Cards Summary Report</h4>
+              <div class="overflow-x-auto">
+                <table class="min-w-full bg-gray-800 rounded-lg">
+                  <thead>
+                    <tr>
+                      <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">User ID</th>
+                      <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Name</th>
+                      <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Issue Date</th>
+                      <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Expiration</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${
+                      filtered.map(u => `
+                        <tr>
+                          <td class="py-2 px-4">${u.id}</td>
+                          <td class="py-2 px-4">${u.name}</td>
+                          <td class="py-2 px-4">${u.issueDate || '-'}</td>
+                          <td class="py-2 px-4">${u.idExpiration}</td>
+                        </tr>
+                      `).join('')
+                    }
+                  </tbody>
+                </table>
+              </div>
+            `;
+          }
+          break;
+        case 'cashTransactions':
+          {
+            const pass = prompt('Enter passkey for cash transactions:');
+            if(pass !== '4613'){
+              showAlert('error','Access Denied','Incorrect passkey.');
+              return;
+            }
+            // Assuming "Debit" is treated as "Cash Transactions"
+            filtered = recharges.filter(r => {
+              const dt = new Date(r.date);
+              return dt >= sDate && dt <= eDate && r.method === 'Debit';
+            });
+            out = `
+              <h4 class="text-xl font-semibold text-white mb-4">Cash Transactions Report</h4>
+              <div class="overflow-x-auto">
+                <table class="min-w-full bg-gray-800 rounded-lg">
+                  <thead>
+                    <tr>
+                      <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Tx ID</th>
+                      <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">User ID</th>
+                      <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Date & Time</th>
+                      <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${
+                      filtered.map((r, i) => `
+                        <tr>
+                          <td class="py-2 px-4">TX${1000 + i}</td>
+                          <td class="py-2 px-4">${r.userId}</td>
+                          <td class="py-2 px-4">${r.date}</td>
+                          <td class="py-2 px-4">AED ${r.amount}</td>
+                        </tr>
+                      `).join('')
+                    }
+                  </tbody>
+                </table>
+              </div>
+            `;
+          }
+          break;
+        case 'cardTransactions':
+          {
+            filtered = scans.filter(s => {
+              const dt = new Date(s.timestamp);
+              return dt >= sDate && dt <= eDate;
+            });
+            out = `
+              <h4 class="text-xl font-semibold text-white mb-4">Card Transactions (Scans) Report</h4>
+              <div class="overflow-x-auto">
+                <table class="min-w-full bg-gray-800 rounded-lg">
+                  <thead>
+                    <tr>
+                      <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">User ID</th>
+                      <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Timestamp</th>
+                      <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">In Time</th>
+                      <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Date</th>
+                      <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Bus No.</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${
+                      filtered.map(s => `
+                        <tr>
+                          <td class="py-2 px-4">${s.userId}</td>
+                          <td class="py-2 px-4">${s.timestamp}</td>
+                          <td class="py-2 px-4">${s.inTime || '-'}</td>
+                          <td class="py-2 px-4">${s.dateStr || '-'}</td>
+                          <td class="py-2 px-4">${s.busNo || 'Citizen 1'}</td>
+                        </tr>
+                      `).join('')
+                    }
+                  </tbody>
+                </table>
+              </div>
+            `;
+          }
+          break;
+        case 'refundReport':
+          {
+            // Show all refunds in date range
+            const refFiltered = refunds.filter(r => {
+              const dt = new Date(r.timestamp);
+              return dt >= sDate && dt <= eDate;
+            });
+            out = `
+              <h4 class="text-xl font-semibold text-white mb-4">Refund Report</h4>
+              <div class="overflow-x-auto">
+                <table class="min-w-full bg-gray-800 rounded-lg">
+                  <thead>
+                    <tr>
+                      <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">User ID</th>
+                      <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Refund Amount</th>
+                      <th class="py-2 px-4 bg-gray-700 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">Date & Time</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${
+                      refFiltered.map(ref => `
+                        <tr>
+                          <td class="py-2 px-4">${ref.userId}</td>
+                          <td class="py-2 px-4">${ref.amount.toFixed(2)} days</td>
+                          <td class="py-2 px-4">${ref.timestamp}</td>
+                        </tr>
+                      `).join('')
+                    }
+                  </tbody>
+                </table>
+              </div>
+            `;
+          }
+          break;
+        default:
+          out = '<p class="text-gray-400">No valid report selected.</p>';
+      }
+      document.getElementById("reportResult").innerHTML = out;
+    }
+
+    function toggleExpirationDate() {
+      const cType = document.getElementById("cardType").value;
+      const expElem = document.getElementById("idExpiration");
+      const now = new Date();
+      let offset = 45;
+      if(cType === 'white') offset = 30;
+      now.setDate(now.getDate() + offset);
+      expElem.value = now.toISOString().split('T')[0];
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      switchTab('home');
+    });
+  </script>
+</body>
+</html>
